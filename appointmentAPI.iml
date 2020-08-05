@@ -6,7 +6,7 @@
         <setting name="validation-enabled" value="true" />
         <setting name="provider-name" value="Hibernate" />
         <datasource-mapping>
-          <factory-entry name="appointmentAPI" />
+          <factory-entry name="appointmentAPI" value="9decde71-05d9-4d2a-bc3f-74df87d57c88" />
         </datasource-mapping>
         <naming-strategy-map />
       </configuration>
