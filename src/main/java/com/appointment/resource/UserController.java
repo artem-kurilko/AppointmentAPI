@@ -1,12 +1,10 @@
 package com.appointment.resource;
 
+import com.appointment.domain.TeacherRate;
 import com.appointment.domain.UniversityUser;
 import com.appointment.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
 
@@ -46,5 +44,14 @@ public class UserController {
     @DeleteMapping("/decline/reservation")
     public void declineReservation(){
 
+    }
+
+    @PostMapping("/price_rate")
+    public void setTeacherRate(@RequestParam @NotNull String teacherName,
+                               @RequestParam @NotNull int time,
+                               @RequestParam @NotNull int price) throws Exception {
+
+        TeacherRate rate = new TeacherRate(teacherName, time, price);
+        userService.setPriceRate(rate);
     }
 }
