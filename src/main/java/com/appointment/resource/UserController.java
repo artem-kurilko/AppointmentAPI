@@ -4,9 +4,12 @@ import com.appointment.domain.TeacherRate;
 import com.appointment.domain.UniversityUser;
 import com.appointment.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @RestController
 public class UserController {
@@ -24,6 +27,12 @@ public class UserController {
 
         UniversityUser newUniversityUser = new UniversityUser(userType, userName, userEmail);
         userService.saveUser(newUniversityUser);
+    }
+
+    @GetMapping("/teachers")
+    public ResponseEntity<List<UniversityUser>> showAllTeachers(){
+        List<UniversityUser> teachers = userService.getAllTeachers();
+        return new ResponseEntity<>(teachers, HttpStatus.OK);
     }
 
     @PostMapping("/create/reservation")

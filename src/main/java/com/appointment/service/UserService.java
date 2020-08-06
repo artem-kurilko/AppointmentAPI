@@ -40,6 +40,11 @@ public class UserService {
 
     }
 
+    public List<UniversityUser> getAllTeachers(){
+        List<UniversityUser> teachers = (List<UniversityUser>) userRepository.findAll().stream().filter(user -> user.getUserType() == "teacher");
+        return teachers;
+    }
+
     public void setPriceRate(TeacherRate teacherRate) throws Exception {
         List<TeacherRate> rates = teacherRateRepository.findAllRatesByTeacherName(teacherRate.getTeacherName());
 
