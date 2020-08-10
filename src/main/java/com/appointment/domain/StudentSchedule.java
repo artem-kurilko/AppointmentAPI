@@ -2,6 +2,7 @@ package com.appointment.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Column;
@@ -14,7 +15,6 @@ import java.sql.Timestamp;
 @Table(name = "student_schedule")
 @Getter
 @Setter
-@AllArgsConstructor
 public class StudentSchedule extends BaseEntity {
 
     @NotNull
@@ -36,4 +36,12 @@ public class StudentSchedule extends BaseEntity {
     @NotNull
     @Column(name = "appointment_status")
     public String appointmentStatus;
+
+    public StudentSchedule(@NotNull String studentName, @NotNull Timestamp appointmentDate, @NotNull Timestamp appointmentFinishDate, @NotNull String appointmentTeacher, @NotNull String appointmentStatus) {
+        this.studentName = studentName;
+        this.appointmentDate = appointmentDate;
+        this.appointmentFinishDate = appointmentFinishDate;
+        this.appointmentTeacher = appointmentTeacher;
+        this.appointmentStatus = appointmentStatus;
+    }
 }

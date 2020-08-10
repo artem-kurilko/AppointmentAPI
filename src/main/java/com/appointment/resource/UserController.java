@@ -1,6 +1,8 @@
 package com.appointment.resource;
 
+import com.appointment.domain.StudentSchedule;
 import com.appointment.domain.TeacherRate;
+import com.appointment.domain.TeacherSchedule;
 import com.appointment.domain.UniversityUser;
 import com.appointment.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,48 +11,58 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Stream;
 
 @RestController
 public class UserController {
-    private final UserService userService;
 
     @Autowired
+    private final UserService userService;
+
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
     @PostMapping("/create/user")
-    public void createUser(@RequestParam @NotNull  String userType,
-                              @RequestParam @NotNull String userName,
-                              @RequestParam @NotNull String userEmail){
+    public ResponseEntity<String> createUser(@RequestBody @NotNull UniversityUser universityUser){
 
-        UniversityUser newUniversityUser = new UniversityUser(userType, userName, userEmail);
-        userService.saveUser(newUniversityUser);
+//        UniversityUser newUniversityUser = new UniversityUser(userType, userName, userEmail);
+        userService.saveUser(universityUser);
+        return new ResponseEntity<>("User has been created", HttpStatus.OK);
     }
 
     @GetMapping("/teachers")
-    public ResponseEntity<List<UniversityUser>> showAllTeachers(){
-        List<UniversityUser> teachers = userService.getAllTeachers();
+    public ResponseEntity<Stream<UniversityUser>> showAllTeachers(){
+        Stream<UniversityUser> teachers = userService.getAllTeachers();
         return new ResponseEntity<>(teachers, HttpStatus.OK);
     }
 
-    @PostMapping("/create/reservation")
-    public void createReservation(){
-
+    @PostMapping("/teacher/schedule")
+    public ResponseEntity<String> createTeacherSchedule(@RequestBody @NotNull TeacherSchedule schedule){
+        userService.saveTeacherSchedule(schedule);
+        return new ResponseEntity<>("Schedule has been created ", HttpStatus.OK);
     }
 
-    @DeleteMapping("/delete/reservation")
+    @PostMapping("/reservation")
+    public ResponseEntity<String> createReservation(@RequestBody @NotNull StudentSchedule reservation){
+        userService.saveStudentReservation(reservation);
+        return new ResponseEntity<>("Reservation has been created", HttpStatus.OK);
+    }
+
+    @DeleteMapping("/reservation")
     public void cancelReservation(){
 
     }
 
-    @PostMapping("/apply/reservation")
+    @PostMapping("/reservation/apply")
     public void applyReservation(){
 
     }
 
-    @DeleteMapping("/decline/reservation")
+    @DeleteMapping("/reservation/decline")
     public void declineReservation(){
 
     }
@@ -59,6 +71,7 @@ public class UserController {
     public void setTeacherRate(@RequestParam @NotNull String teacherName,
                                @RequestParam @NotNull int time,
                                @RequestParam @NotNull int price) throws Exception {
+
 
         TeacherRate rate = new TeacherRate(teacherName, time, price);
         userService.setPriceRate(rate);

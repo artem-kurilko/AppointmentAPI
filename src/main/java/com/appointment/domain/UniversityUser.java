@@ -2,6 +2,7 @@ package com.appointment.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Column;
@@ -27,5 +28,4 @@ public class UniversityUser extends BaseEntity {
     @NotNull
     @Column(name = "user_email")
     public String userEmail;
-
 }
