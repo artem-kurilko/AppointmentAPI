@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.json.JSONArray;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,33 +16,14 @@ import java.sql.Timestamp;
 @Table(name = "student_schedule")
 @Getter
 @Setter
+@AllArgsConstructor
 public class StudentSchedule extends BaseEntity {
 
     @NotNull
     @Column(name = "student_name")
     public String studentName;
 
-    @NotNull
-    @Column(name = "appointment_date")
-    public Timestamp appointmentDate;
-
-    @NotNull
-    @Column(name = "appointment_finish_date")
-    public Timestamp appointmentFinishDate;
-
-    @NotNull
-    @Column(name = "appointment_teacher")
-    public String appointmentTeacher;
-
-    @NotNull
-    @Column(name = "appointment_status")
-    public String appointmentStatus;
-
-    public StudentSchedule(@NotNull String studentName, @NotNull Timestamp appointmentDate, @NotNull Timestamp appointmentFinishDate, @NotNull String appointmentTeacher, @NotNull String appointmentStatus) {
-        this.studentName = studentName;
-        this.appointmentDate = appointmentDate;
-        this.appointmentFinishDate = appointmentFinishDate;
-        this.appointmentTeacher = appointmentTeacher;
-        this.appointmentStatus = appointmentStatus;
-    }
+  /*  @NotNull
+    @Column(name = "schedule")
+    public JSONArray schedule;*/
 }

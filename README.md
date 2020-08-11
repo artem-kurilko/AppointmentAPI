@@ -4,8 +4,13 @@
 основной аддрес localhost:8080
 
 **Создание пользователя**
-POST /create/user 
+POST /user 
 Возвращает строку: "User has been created"
+
+Необходимые параметры тела запроса:
+* userType - тип пользователя (student или teacher)
+* userName - имя пользователя, должно быть уникальным
+* userEmail - почта пользователя, должно быть уникальным
 
 ![GitHub Logo](/images/)
 Format: ![Alt Text](url)
@@ -17,8 +22,6 @@ GET /teachers
 ![GitHub Logo](/images/)
 Format: ![Alt Text](url)
 
-Тело запроса
-
 ** Получить время учителя когда он доступен **
 GET teacher/schedule
 
@@ -27,6 +30,9 @@ Format: ![Alt Text](url)
 
 ** Добавить график учителя **
 POST teacher/schedule
+
+Необходимые параметры тела запроса:
+* 
 
 ![GitHub Logo](/images/)
 Format: ![Alt Text](url)

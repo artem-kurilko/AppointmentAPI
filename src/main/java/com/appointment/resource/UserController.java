@@ -26,17 +26,15 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/create/user")
+    @PostMapping("/user")
     public ResponseEntity<String> createUser(@RequestBody @NotNull UniversityUser universityUser){
-
-//        UniversityUser newUniversityUser = new UniversityUser(userType, userName, userEmail);
         userService.saveUser(universityUser);
         return new ResponseEntity<>("User has been created", HttpStatus.OK);
     }
 
     @GetMapping("/teachers")
-    public ResponseEntity<Stream<UniversityUser>> showAllTeachers(){
-        Stream<UniversityUser> teachers = userService.getAllTeachers();
+    public ResponseEntity<List<String>> showAllTeachers(){
+        List<String> teachers = userService.getAllTeachers();
         return new ResponseEntity<>(teachers, HttpStatus.OK);
     }
 

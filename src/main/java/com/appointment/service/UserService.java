@@ -11,7 +11,9 @@ import com.appointment.repository.UniversityUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
@@ -41,6 +43,10 @@ public class UserService {
         teacherScheduleRepository.
     }*/
 
+    public void addTeacherSchedule(TeacherSchedule teacherSchedule){
+        teacherScheduleRepository.save(teacherSchedule);
+    }
+
     public void saveTeacherSchedule(TeacherSchedule teacherSchedule){
         teacherScheduleRepository.save(teacherSchedule);
     }
@@ -61,9 +67,10 @@ public class UserService {
 
     }
 
-    public Stream<UniversityUser> getAllTeachers(){
-        Stream<UniversityUser> teachers = universityUserRepository.findAll().stream().filter(user -> user.getUserType() == "teacher");
-        return teachers;
+    public List<String> getAllTeachers(){
+        List<String> teachersName = new LinkedList<>();
+        universityUserRepository.findAll().stream().filter(user -> user.getUserType().equals("teacher")).collect(Collectors.toList()).forEach(name -> teachersName.add(name.getUserName()));
+        return teachersName;
     }
 
     public void setPriceRate(TeacherRate teacherRate) throws Exception {

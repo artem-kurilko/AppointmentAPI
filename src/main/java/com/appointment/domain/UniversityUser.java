@@ -15,6 +15,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class UniversityUser extends BaseEntity {
 
     @NotNull
