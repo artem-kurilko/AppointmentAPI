@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.json.JSONArray;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -16,13 +17,15 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class TeacherSchedule extends BaseEntity {
 
     @NotNull
     @Column(name = "teacher_name")
     public String teacherName;
 
-  /*  @NotNull
-    @Column(name = "schedule")
-    public JSONArray schedule;*/
+    @NotNull
+    @Column(name = "schedule", columnDefinition = "TEXT")
+    @Convert(converter= JSONArrayConverter.class)
+    public JSONArray schedule;
 }

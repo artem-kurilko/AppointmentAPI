@@ -4,6 +4,7 @@ import com.appointment.domain.StudentSchedule;
 import com.appointment.domain.TeacherRate;
 import com.appointment.domain.TeacherSchedule;
 import com.appointment.domain.UniversityUser;
+import com.appointment.notification.EmailNotification;
 import com.appointment.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,8 +28,9 @@ public class UserController {
     }
 
     @PostMapping("/user")
-    public ResponseEntity<String> createUser(@RequestBody @NotNull UniversityUser universityUser){
+    public ResponseEntity<String> createUser(@RequestBody @NotNull UniversityUser universityUser) throws Exception {
         userService.saveUser(universityUser);
+        new EmailNotification().sendMail("kurilko365@gmail.com");
         return new ResponseEntity<>("User has been created", HttpStatus.OK);
     }
 
@@ -65,7 +67,7 @@ public class UserController {
 
     }
 
-    @PostMapping("/price_rate")
+    /*@PostMapping("/price_rate")
     public void setTeacherRate(@RequestParam @NotNull String teacherName,
                                @RequestParam @NotNull int time,
                                @RequestParam @NotNull int price) throws Exception {
@@ -73,5 +75,5 @@ public class UserController {
 
         TeacherRate rate = new TeacherRate(teacherName, time, price);
         userService.setPriceRate(rate);
-    }
+    }*/
 }

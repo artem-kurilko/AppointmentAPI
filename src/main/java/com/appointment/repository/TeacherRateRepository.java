@@ -12,7 +12,4 @@ public interface TeacherRateRepository extends JpaRepository<TeacherRate, Long> 
 
     @Query("select u from TeacherRate u where u.teacherName = ?1")
     List<TeacherRate> findAllRatesByTeacherName(String userName);
-
-    @Query("select u from TeacherRate u where u.teacherName = ?1 and u.time = ?2")
-    TeacherRate findTeacherRateByNameAndTime(String teacherName, int time);
 }

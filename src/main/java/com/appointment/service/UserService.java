@@ -73,7 +73,7 @@ public class UserService {
         return teachersName;
     }
 
-    public void setPriceRate(TeacherRate teacherRate) throws Exception {
+    /*public void setPriceRate(TeacherRate teacherRate) throws Exception {
         List<TeacherRate> rates = teacherRateRepository.findAllRatesByTeacherName(teacherRate.getTeacherName());
 
         if (rates.stream().anyMatch(rate -> rate.getTime() == teacherRate.getTime()))
@@ -83,5 +83,5 @@ public class UserService {
             teacherRateRepository.delete(rate);
             teacherRateRepository.save(teacherRate);
         }
-    }
+    }*/
 }
