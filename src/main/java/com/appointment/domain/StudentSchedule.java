@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -26,6 +27,6 @@ public class StudentSchedule extends BaseEntity {
 
     @NotNull
     @Column(name = "schedule", columnDefinition = "TEXT")
-    @Convert(converter= JSONArrayConverter.class)
-    public JSONArray schedule;
+    @Convert(converter= JSONObjectConverter.class)
+    public JSONObject schedule;
 }

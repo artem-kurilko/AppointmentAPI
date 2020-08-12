@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class UserService {
@@ -35,36 +34,20 @@ public class UserService {
         universityUserRepository.save(user);
     }
 
+    public UniversityUser getUserByName(String name){
+        return universityUserRepository.findByUserName(name);
+    }
+
     public void saveStudentReservation(StudentSchedule studentSchedule){
         studentScheduleRepository.save(studentSchedule);
     }
 
-    /*public TeacherSchedule getTeacherSchedule(String teacherName){
-        teacherScheduleRepository.
-    }*/
-
-    public void addTeacherSchedule(TeacherSchedule teacherSchedule){
-        teacherScheduleRepository.save(teacherSchedule);
+    public void cancelStudentReservation(StudentSchedule reservation){
+        studentScheduleRepository.delete(reservation);
     }
 
     public void saveTeacherSchedule(TeacherSchedule teacherSchedule){
         teacherScheduleRepository.save(teacherSchedule);
-    }
-
-    public void createReservation(){
-
-    }
-
-    public void cancelReservation(){
-
-    }
-
-    public void applyReservation(){
-
-    }
-
-    public void declineReservation(){
-
     }
 
     public List<String> getAllTeachers(){
@@ -73,15 +56,14 @@ public class UserService {
         return teachersName;
     }
 
-    /*public void setPriceRate(TeacherRate teacherRate) throws Exception {
-        List<TeacherRate> rates = teacherRateRepository.findAllRatesByTeacherName(teacherRate.getTeacherName());
-
-        if (rates.stream().anyMatch(rate -> rate.getTime() == teacherRate.getTime()))
-            throw new Exception("Cannot add new price rate for time that already exist.");
-        else{
-            TeacherRate rate = teacherRateRepository.findTeacherRateByNameAndTime(teacherRate.getTeacherName(), teacherRate.getTime());
-            teacherRateRepository.delete(rate);
-            teacherRateRepository.save(teacherRate);
+    public void savePriceRate(TeacherRate teacherRate) throws Exception {
+        if (universityUserRepository.findAll().stream().noneMatch(user -> user.getUserName().equals(teacherRate.getTeacherName()))){
+            throw new Exception("Cannot add price rate as there is no teacher with such name.");
         }
-    }*/
+
+        if (teacherRateRepository.findAll().stream().anyMatch(user -> user.getTime() == teacherRate.getTime()))
+            throw new Exception("Cannot add new price rate for time that already exist.");
+        else
+            teacherRateRepository.save(teacherRate);
+    }
 }

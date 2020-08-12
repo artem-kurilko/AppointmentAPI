@@ -12,13 +12,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
-import java.sql.Timestamp;
-import java.util.Date;
 import java.util.List;
-import java.util.stream.Stream;
 
 @RestController
 public class UserController {
+    private final String DEFAULT_SENDER_NAME = "kurilko365@gmail.com";
+    private final String DEFAULT_SENDER_PASSWORD = "Cfd802vds36";
+    private String SENDER_NAME;
+    private String SENDER_PASSWORD;
+    private String RECIPIENT_NAME;
 
     @Autowired
     private final UserService userService;
@@ -30,7 +32,12 @@ public class UserController {
     @PostMapping("/user")
     public ResponseEntity<String> createUser(@RequestBody @NotNull UniversityUser universityUser) throws Exception {
         userService.saveUser(universityUser);
-        new EmailNotification().sendMail("kurilko365@gmail.com");
+
+        SENDER_NAME = DEFAULT_SENDER_NAME;
+        SENDER_PASSWORD = DEFAULT_SENDER_PASSWORD;
+        RECIPIENT_NAME = universityUser.getUserEmail();
+
+//        new EmailNotification().sendMail(SENDER_NAME, SENDER_PASSWORD, RECIPIENT_NAME);
         return new ResponseEntity<>("User has been created", HttpStatus.OK);
     }
 
@@ -47,33 +54,57 @@ public class UserController {
     }
 
     @PostMapping("/reservation")
-    public ResponseEntity<String> createReservation(@RequestBody @NotNull StudentSchedule reservation){
+    public ResponseEntity<String> createReservation(@RequestBody @NotNull StudentSchedule reservation) throws Exception {
+
+        UniversityUser user = userService.getUserByName(reservation.getStudentName());
+        SENDER_NAME = user.getUserEmail();
+        SENDER_PASSWORD = user.getUserEmailPassword();
+        RECIPIENT_NAME = "";
+
         userService.saveStudentReservation(reservation);
+        new EmailNotification().sendMail(SENDER_NAME, SENDER_PASSWORD, RECIPIENT_NAME);
+
         return new ResponseEntity<>("Reservation has been created", HttpStatus.OK);
     }
 
     @DeleteMapping("/reservation")
-    public void cancelReservation(){
+    public ResponseEntity<String> cancelReservation(@RequestBody @NotNull  StudentSchedule reservation) throws Exception {
 
+        UniversityUser user = userService.getUserByName(reservation.getStudentName());
+        SENDER_NAME = user.getUserEmail();
+        SENDER_PASSWORD = user.getUserEmailPassword();
+        RECIPIENT_NAME = "";
+
+//        userService.createReservation(reservation);
+        new EmailNotification().sendMail(SENDER_NAME, SENDER_PASSWORD, RECIPIENT_NAME);
+
+        return new ResponseEntity<>("Reservation has been canceled", HttpStatus.OK);
     }
 
     @PostMapping("/reservation/apply")
-    public void applyReservation(){
+    public ResponseEntity<String> applyReservation(@RequestBody @NotNull TeacherSchedule schedule) throws Exception {
+        SENDER_NAME = "";
+        SENDER_PASSWORD = "";
+        RECIPIENT_NAME = "";
 
+        new EmailNotification().sendMail(SENDER_NAME, SENDER_PASSWORD, RECIPIENT_NAME);
+        return new ResponseEntity<>("Reservation has been applied", HttpStatus.OK);
     }
 
     @DeleteMapping("/reservation/decline")
-    public void declineReservation(){
+    public ResponseEntity<String> declineReservation() throws Exception {
+        SENDER_NAME = "";
+        SENDER_PASSWORD = "";
+        RECIPIENT_NAME = "";
 
+        new EmailNotification().sendMail(SENDER_NAME, SENDER_PASSWORD, RECIPIENT_NAME);
+        return new ResponseEntity<>("Reservation has been declined", HttpStatus.OK);
     }
 
-    /*@PostMapping("/price_rate")
-    public void setTeacherRate(@RequestParam @NotNull String teacherName,
-                               @RequestParam @NotNull int time,
-                               @RequestParam @NotNull int price) throws Exception {
+    @PostMapping("/price-rate")
+    public ResponseEntity<String> setTeacherRate(@RequestBody @NotNull TeacherRate rate) throws Exception {
 
-
-        TeacherRate rate = new TeacherRate(teacherName, time, price);
-        userService.setPriceRate(rate);
-    }*/
+        userService.savePriceRate(rate);
+        return new ResponseEntity<>("Teacher rate has been saved", HttpStatus.OK);
+    }
 }

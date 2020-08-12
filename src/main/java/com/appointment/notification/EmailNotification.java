@@ -9,7 +9,7 @@ public class EmailNotification {
     private final String SENDER_NAME = "universityappointment@gmail.com";
     private final String SENDER_PASSWORD = "Sd34retA";
 
-    public void sendMail(String RECIPIENT_NAME) throws Exception {
+    public void sendMail(String SENDER_NAME, String SENDER_PASSWORD, String RECIPIENT_NAME) throws Exception {
         Properties p = new Properties();
         p.put("mail.smtp.host", "smtp.gmail.com");
         p.put("mail.smtp.socketFactory.port", 465);

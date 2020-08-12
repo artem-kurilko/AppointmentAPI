@@ -1,21 +1,22 @@
 package com.appointment.domain;
 
-import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
 @Converter
-public class JSONArrayConverter implements AttributeConverter<JSONArray, String> {
+public class JSONObjectConverter implements AttributeConverter<JSONObject, String> {
     @Override
-    public String convertToDatabaseColumn(JSONArray jsonData) {
+    public String convertToDatabaseColumn(JSONObject jsonData) {
         String json;
         try{
             json = jsonData.toString();
         }
         catch (NullPointerException ex)
         {
+            //extend error handling here if you want
             ex.printStackTrace();
             json = "";
         }
@@ -23,12 +24,13 @@ public class JSONArrayConverter implements AttributeConverter<JSONArray, String>
     }
 
     @Override
-    public JSONArray convertToEntityAttribute(String jsonDataAsJson) {
-        JSONArray jsonData;
+    public JSONObject convertToEntityAttribute(String jsonDataAsJson) {
+        JSONObject jsonData;
         try {
-            jsonData = new JSONArray(jsonDataAsJson);
+            jsonData = new JSONObject(jsonDataAsJson);
         } catch (JSONException ex) {
             ex.printStackTrace();
+            //extend error handling here if you want
             jsonData = null;
         }
         return jsonData;
