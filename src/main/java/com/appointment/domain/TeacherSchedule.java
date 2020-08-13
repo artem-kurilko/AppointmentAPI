@@ -26,7 +26,7 @@ public class TeacherSchedule extends BaseEntity {
     public String teacherName;
 
     @NotNull
-    @Column(name = "schedule", columnDefinition = "TEXT")
+    @Column(name = "schedule")
     @Convert(converter= JSONObjectConverter.class)
     public JSONObject schedule;
 }

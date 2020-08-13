@@ -8,9 +8,11 @@ import com.appointment.repository.StudentScheduleRepository;
 import com.appointment.repository.TeacherRateRepository;
 import com.appointment.repository.TeacherScheduleRepository;
 import com.appointment.repository.UniversityUserRepository;
+import com.appointment.security.SecurityChecker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,13 +23,15 @@ public class UserService {
     private final TeacherRateRepository teacherRateRepository;
     private final StudentScheduleRepository studentScheduleRepository;
     private final TeacherScheduleRepository teacherScheduleRepository;
+    private final SecurityChecker securityChecker;
 
     @Autowired
-    public UserService(UniversityUserRepository universityUserRepository, TeacherRateRepository teacherRateRepository, StudentScheduleRepository studentScheduleRepository, TeacherScheduleRepository teacherScheduleRepository) {
+    public UserService(UniversityUserRepository universityUserRepository, TeacherRateRepository teacherRateRepository, StudentScheduleRepository studentScheduleRepository, TeacherScheduleRepository teacherScheduleRepository, SecurityChecker securityChecker) {
         this.universityUserRepository = universityUserRepository;
         this.teacherRateRepository = teacherRateRepository;
         this.studentScheduleRepository = studentScheduleRepository;
         this.teacherScheduleRepository = teacherScheduleRepository;
+        this.securityChecker = securityChecker;
     }
 
     public void saveUser(UniversityUser user){
@@ -38,11 +42,20 @@ public class UserService {
         return universityUserRepository.findByUserName(name);
     }
 
-    public void saveStudentReservation(StudentSchedule studentSchedule){
-        studentScheduleRepository.save(studentSchedule);
+    public void saveStudentReservation(StudentSchedule studentSchedule) throws Exception {
+        String status = "reserved";
+
+        securityChecker.checkIfUserExists(studentSchedule.studentName);
+        securityChecker.checkIfUserExists(studentSchedule.teacherName);
+
+        StudentSchedule schedule = new StudentSchedule(studentSchedule.getStudentName(), studentSchedule.getAppointmentDate(), studentSchedule.getAppointmentFinishDate(), studentSchedule.getTeacherName(), status);
+        studentScheduleRepository.save(schedule);
     }
 
-    public void cancelStudentReservation(StudentSchedule reservation){
+    public void cancelStudentReservation(String studentName, Timestamp appointmentDate) throws Exception {
+        StudentSchedule reservation = studentScheduleRepository.findScheduleByNameAndAppointmentDate(studentName, appointmentDate);
+
+        securityChecker.checkIfUserExists(studentName);
         studentScheduleRepository.delete(reservation);
     }
 
@@ -57,13 +70,9 @@ public class UserService {
     }
 
     public void savePriceRate(TeacherRate teacherRate) throws Exception {
-        if (universityUserRepository.findAll().stream().noneMatch(user -> user.getUserName().equals(teacherRate.getTeacherName()))){
-            throw new Exception("Cannot add price rate as there is no teacher with such name.");
-        }
 
-        if (teacherRateRepository.findAll().stream().anyMatch(user -> user.getTime() == teacherRate.getTime()))
-            throw new Exception("Cannot add new price rate for time that already exist.");
-        else
-            teacherRateRepository.save(teacherRate);
+        securityChecker.checkIfUserExists(teacherRate.teacherName);
+        securityChecker.checkIfPriceRateAlreadyExists(teacherRate);
+        teacherRateRepository.save(teacherRate);
     }
 }
