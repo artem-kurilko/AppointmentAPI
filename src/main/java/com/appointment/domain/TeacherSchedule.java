@@ -1,20 +1,23 @@
 package com.appointment.domain;
 
+import com.vladmihalcea.hibernate.type.array.StringArrayType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.Column;
-import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "teacher_schedule")
+@TypeDefs(@TypeDef(name = "string-array", typeClass = StringArrayType.class))
 @Getter
 @Setter
 @AllArgsConstructor
@@ -26,7 +29,14 @@ public class TeacherSchedule extends BaseEntity {
     public String teacherName;
 
     @NotNull
-    @Column(name = "schedule")
-    @Convert(converter= JSONObjectConverter.class)
-    public JSONObject schedule;
+    @Column(name = "appointment_date")
+    public Timestamp appointmentDate;
+
+    @NotNull
+    @Column(name = "appointment_finish_date")
+    public Timestamp appointmentFinishDate;
+
+    @Column(name = "students")
+    @Type(type = "string-array" )
+    public String[] students;
 }

@@ -63,6 +63,19 @@ public class UserService {
         teacherScheduleRepository.save(teacherSchedule);
     }
 
+    public String getTeacherSchedule(String teacherName) throws Exception {
+        String response = "Расписание преподователя " + teacherName + ":\n";
+        securityChecker.checkIfUserExists(teacherName);
+
+        List<TeacherSchedule> schedules = teacherScheduleRepository.findAll().stream().filter(teacher -> teacher.getTeacherName().equals(teacherName)).collect(Collectors.toList());
+        for (int i = 0; i < schedules.size(); i++){
+            response += schedules.get(i).getAppointmentDate() + " - ";
+            response += schedules.get(i).getAppointmentFinishDate() + "\n";
+        }
+
+        return response;
+    }
+
     public List<String> getAllTeachers(){
         List<String> teachersName = new LinkedList<>();
         universityUserRepository.findAll().stream().filter(user -> user.getUserType().equals("teacher")).collect(Collectors.toList()).forEach(name -> teachersName.add(name.getUserName()));
@@ -71,7 +84,7 @@ public class UserService {
 
     public void savePriceRate(TeacherRate teacherRate) throws Exception {
 
-        securityChecker.checkIfUserExists(teacherRate.teacherName);
+        securityChecker.checkIfUserExists(teacherRate.getTeacherName());
         securityChecker.checkIfPriceRateAlreadyExists(teacherRate);
         teacherRateRepository.save(teacherRate);
     }

@@ -37,7 +37,7 @@ public class UserController {
         senderPassword = DEFAULT_SENDER_PASSWORD;
         recipientName = universityUser.getUserEmail();
 
-        new EmailNotification().sendMail(senderName, senderPassword, recipientName);
+//        new EmailNotification().sendMail(senderName, senderPassword, recipientName);
         return new ResponseEntity<>("User has been created", HttpStatus.OK);
     }
 
@@ -46,6 +46,13 @@ public class UserController {
 
         List<String> teachers = userService.getAllTeachers();
         return new ResponseEntity<>(teachers, HttpStatus.OK);
+    }
+
+    @GetMapping("/teacher/schedule")
+    public ResponseEntity<String> showTeacherSchedule(@RequestParam @NotNull String teacherName) throws Exception {
+
+        String response = userService.getTeacherSchedule(teacherName);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping("/teacher/schedule")
@@ -65,7 +72,7 @@ public class UserController {
 
         userService.saveStudentReservation(reservation);
 
-        new EmailNotification().sendMail(senderName, senderPassword, recipientName);
+//        new EmailNotification().sendMail(senderName, senderPassword, recipientName);
         return new ResponseEntity<>("Reservation has been created", HttpStatus.OK);
     }
 
@@ -77,7 +84,7 @@ public class UserController {
         recipientName = "";
         userService.cancelStudentReservation(userName, appointmentDate);
 
-        new EmailNotification().sendMail(senderName, senderPassword, recipientName);
+//        new EmailNotification().sendMail(senderName, senderPassword, recipientName);
         return new ResponseEntity<>("Reservation has been canceled", HttpStatus.OK);
     }
 
@@ -87,7 +94,7 @@ public class UserController {
         senderPassword = "";
         recipientName = "";
 
-        new EmailNotification().sendMail(senderName, senderPassword, recipientName);
+//        new EmailNotification().sendMail(senderName, senderPassword, recipientName);
         return new ResponseEntity<>("Reservation has been applied", HttpStatus.OK);
     }
 
@@ -97,7 +104,7 @@ public class UserController {
         senderPassword = "";
         recipientName = "";
 
-        new EmailNotification().sendMail(senderName, senderPassword, recipientName);
+//        new EmailNotification().sendMail(senderName, senderPassword, recipientName);
         return new ResponseEntity<>("Reservation has been declined", HttpStatus.OK);
     }
 
