@@ -8,11 +8,9 @@ import com.appointment.repository.StudentScheduleRepository;
 import com.appointment.repository.TeacherRateRepository;
 import com.appointment.repository.TeacherScheduleRepository;
 import com.appointment.repository.UniversityUserRepository;
-import com.appointment.security.SecurityChecker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,15 +21,13 @@ public class UserService {
     private final TeacherRateRepository teacherRateRepository;
     private final StudentScheduleRepository studentScheduleRepository;
     private final TeacherScheduleRepository teacherScheduleRepository;
-    private final SecurityChecker securityChecker;
 
     @Autowired
-    public UserService(UniversityUserRepository universityUserRepository, TeacherRateRepository teacherRateRepository, StudentScheduleRepository studentScheduleRepository, TeacherScheduleRepository teacherScheduleRepository, SecurityChecker securityChecker) {
+    public UserService(UniversityUserRepository universityUserRepository, TeacherRateRepository teacherRateRepository, StudentScheduleRepository studentScheduleRepository, TeacherScheduleRepository teacherScheduleRepository) {
         this.universityUserRepository = universityUserRepository;
         this.teacherRateRepository = teacherRateRepository;
         this.studentScheduleRepository = studentScheduleRepository;
         this.teacherScheduleRepository = teacherScheduleRepository;
-        this.securityChecker = securityChecker;
     }
 
     public void saveUser(UniversityUser user){
@@ -42,31 +38,24 @@ public class UserService {
         return universityUserRepository.findByUserName(name);
     }
 
-    public void saveStudentReservation(StudentSchedule studentSchedule) throws Exception {
+    public void saveStudentReservation(StudentSchedule studentSchedule) {
         String status = "reserved";
 
-        securityChecker.checkIfUserExists(studentSchedule.studentName);
-        securityChecker.checkIfUserExists(studentSchedule.teacherName);
 
         StudentSchedule schedule = new StudentSchedule(studentSchedule.getStudentName(), studentSchedule.getAppointmentDate(), studentSchedule.getAppointmentFinishDate(), studentSchedule.getTeacherName(), status);
         studentScheduleRepository.save(schedule);
     }
 
-    public void cancelStudentReservation(String studentName, Timestamp appointmentDate) throws Exception {
-        StudentSchedule reservation = studentScheduleRepository.findScheduleByNameAndAppointmentDate(studentName, appointmentDate);
-
-        securityChecker.checkIfUserExists(studentName);
+    public void cancelStudentReservation(StudentSchedule reservation) {
         studentScheduleRepository.delete(reservation);
     }
 
-    public void saveTeacherSchedule(TeacherSchedule teacherSchedule) throws Exception {
-        securityChecker.checkIfUserExists(teacherSchedule.getTeacherName());
+    public void saveTeacherSchedule(TeacherSchedule teacherSchedule) {
         teacherScheduleRepository.save(teacherSchedule);
     }
 
-    public String getTeacherSchedule(String teacherName) throws Exception {
+    public String getTeacherSchedule(String teacherName) {
         String response = "Расписание преподователя " + teacherName + ":\n";
-        securityChecker.checkIfUserExists(teacherName);
 
         List<TeacherSchedule> schedules = teacherScheduleRepository.findAll().stream().filter(teacher -> teacher.getTeacherName().equals(teacherName)).collect(Collectors.toList());
         for (int i = 0; i < schedules.size(); i++){
@@ -83,8 +72,7 @@ public class UserService {
         return teachersName;
     }
 
-    public String getPriceRate(String teacherName) throws Exception {
-        securityChecker.checkIfUserExists(teacherName);
+    public String getPriceRate(String teacherName) {
         String response = "Стоимость занятий у " + teacherName + ":\n";
         List<TeacherRate> teacherRates = teacherRateRepository.findAllRatesByTeacherName(teacherName);
 
@@ -95,9 +83,7 @@ public class UserService {
         return response;
     }
 
-    public void savePriceRate(TeacherRate teacherRate) throws Exception {
-        securityChecker.checkIfUserExists(teacherRate.getTeacherName());
-        securityChecker.checkIfPriceRateAlreadyExists(teacherRate);
+    public void savePriceRate(TeacherRate teacherRate) {
         teacherRateRepository.save(teacherRate);
     }
 }
