@@ -1,9 +1,9 @@
-#University appointment api
+# University appointment api
 
-##API:
+## API:
 основной аддрес localhost:8080
 
-**Создание пользователя**
+__Создание пользователя__
 POST /user 
 Возвращает строку: "User has been created"
 
@@ -12,59 +12,51 @@ POST /user
 * userName - имя пользователя, должно быть уникальным
 * userEmail - почта пользователя, должно быть уникальным
 
-![GitHub Logo](/src/main/resources/images/create_user.png)
-Format: ![Alt Text](url)
+![](/src/main/resources/images/create_user.png)
 
-**Получить список учителей**
+__Получить список учителей__
 GET /teachers
 Возвращает имена всех учителей из бд.
 
-![GitHub Logo](/src/main/resources/images/teachers)
-Format: ![Alt Text](url)
+![](/src/main/resources/images/teachers)
 
-** Получить время учителя когда он доступен **
+__ Получить время учителя когда он доступен __
 GET teacher/schedule
 
 Необходимы параметр запроса:
 * teacherName - имя преподователя
 
-![GitHub Logo](/src/main/resources/images/get_teacher_schedule.png)
-Format: ![Alt Text](url)
+![](/src/main/resources/images/get_teacher_schedule.png)
 
-** Добавить график учителя **
+__ Добавить график учителя __
 POST teacher/schedule
 
 Необходимые параметры тела запроса:
 * 
 
-![GitHub Logo](/src/main/resources/images/teacher_schedule)
-Format: ![Alt Text](url)
+![](/src/main/resources/images/teacher_schedule)
 
-** Создать резервацию студенту **
+__ Создать резервацию студенту __
 POST /reservation
 
-![GitHub Logo](/images/)
-Format: ![Alt Text](url)
+![](/images/)
 
-** Отменить резервацию студенту **
+__ Отменить резервацию студенту __
 DELETE /reservation
 
-![GitHub Logo](/images/)
-Format: ![Alt Text](url)
+![](/images/)
 
-** Принять резервацию учителю **
+__ Принять резервацию учителю __
 POST /reservation/apply
 
-![GitHub Logo](/images/)
-Format: ![Alt Text](url)
+![](/images/)
 
-** Отменить резервацию учителю **
+__ Отменить резервацию учителю __
 DELETE /reservation/decline
 
-![GitHub Logo](/images/)
-Format: ![Alt Text](url)
+![](/images/)
 
-** Создать стоимость за определенное кол-во времени **
+__ Создать стоимость за определенное кол-во времени __
 POST /price_rate
 
 Необходимые параметры тела запроса:
@@ -72,8 +64,7 @@ POST /price_rate
 * time - время 
 * price - целочисленная стоимость за указанное время
 
-![GitHub Logo](/src/main/resources/images/price_rate.png)
-Format: ![Alt Text](url)
+![](/src/main/resources/images/price_rate.png)
 
 
 
