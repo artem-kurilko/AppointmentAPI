@@ -20,7 +20,7 @@ POST /user
 GET /teachers
 Возвращает имена всех учителей из бд.
 
-![](/src/main/resources/images/teachers)
+![](/src/main/resources/images/teachers.png)
 
 ### Получить время учителя когда он доступен
 
