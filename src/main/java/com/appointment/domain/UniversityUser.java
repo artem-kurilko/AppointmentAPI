@@ -30,7 +30,4 @@ public class UniversityUser extends BaseEntity {
     @Column(name = "user_email")
     public String userEmail;
 
-    @NotNull
-    @Column(name = "user_email_password")
-    public String userEmailPassword;
 }

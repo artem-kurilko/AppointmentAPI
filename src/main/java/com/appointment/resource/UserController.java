@@ -1,9 +1,6 @@
 package com.appointment.resource;
 
-import com.appointment.domain.StudentSchedule;
-import com.appointment.domain.TeacherRate;
-import com.appointment.domain.TeacherSchedule;
-import com.appointment.domain.UniversityUser;
+import com.appointment.domain.*;
 import com.appointment.notification.EmailNotification;
 import com.appointment.security.SecurityChecker;
 import com.appointment.service.UserService;
@@ -13,18 +10,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
-import java.sql.Timestamp;
 import java.util.List;
 
 @RestController
 public class UserController {
     private final UserService userService;
     private final SecurityChecker securityChecker;
-
-    private final String DEFAULT_SENDER_NAME = "universityappointmentapi@gmail.com";
-    private final String DEFAULT_SENDER_PASSWORD = "A123tmp123key";
-    private String senderName;
-    private String senderPassword;
     private String recipientName;
 
     @Autowired
@@ -36,13 +27,9 @@ public class UserController {
     @PostMapping("/user")
     public ResponseEntity<String> createUser(@RequestBody @NotNull UniversityUser universityUser) throws Exception {
 
-        senderName = DEFAULT_SENDER_NAME;
-        senderPassword = DEFAULT_SENDER_PASSWORD;
         recipientName = universityUser.getUserEmail();
-
-        new EmailNotification().sendMail(senderName, senderPassword, recipientName);
         userService.saveUser(universityUser);
-
+        new EmailNotification().sendMail(EmailType.REGISTERED, recipientName);
         return new ResponseEntity<>("User has been created", HttpStatus.OK);
     }
 
@@ -55,77 +42,64 @@ public class UserController {
 
     @GetMapping("/teacher/schedule")
     public ResponseEntity<String> showTeacherSchedule(@RequestParam @NotNull String teacherName) throws Exception {
-        securityChecker.checkIfUserExists(teacherName);
 
+        securityChecker.checkIfUserExists(teacherName);
         String response = userService.getTeacherSchedule(teacherName);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping("/teacher/schedule")
     public ResponseEntity<String> createTeacherSchedule(@RequestBody @NotNull TeacherSchedule schedule) throws Exception {
-        securityChecker.checkIfUserExists(schedule.getTeacherName());
 
+        securityChecker.checkIfUserExists(schedule.getTeacherName());
         userService.saveTeacherSchedule(schedule);
         return new ResponseEntity<>("Schedule has been created ", HttpStatus.OK);
     }
 
     @PostMapping("/reservation")
     public ResponseEntity<String> createReservation(@RequestBody @NotNull StudentSchedule reservation) throws Exception {
-        securityChecker.checkIfUserExists(reservation.getStudentName());
-        securityChecker.checkIfUserExists(reservation.getTeacherName());
+        securityChecker.checkIfUserExists(reservation.getStudentName(), reservation.getTeacherName());
+        securityChecker.checkTimeSlotValidation(reservation.getAppointmentDate(), reservation.getAppointmentFinishDate());
+        securityChecker.checkIfTeacherScheduleIsFree(reservation.getTeacherName(), reservation.getAppointmentDate(), reservation.getAppointmentFinishDate());
 
-        UniversityUser user = userService.getUserByName(reservation.getStudentName());
-        senderName = DEFAULT_SENDER_NAME;
-        senderPassword = DEFAULT_SENDER_PASSWORD;
+        UniversityUser user = userService.getUserByName(reservation.getTeacherName());
         recipientName = user.getUserEmail();
-
         userService.saveStudentReservation(reservation);
 
-//        new EmailNotification().sendMail(senderName, senderPassword, recipientName);
+        new EmailNotification().sendMail(EmailType.RESERVED, recipientName);
         return new ResponseEntity<>("Reservation has been created", HttpStatus.OK);
     }
 
     @DeleteMapping("/reservation")
     public ResponseEntity<String> cancelReservation(@RequestBody @NotNull StudentSchedule reservation) throws Exception {
-        securityChecker.checkIfUserExists(reservation.getStudentName());
-        securityChecker.checkIfUserExists(reservation.getTeacherName());
-
+        securityChecker.checkIfUserExists(reservation.getStudentName(), reservation.getTeacherName());
         UniversityUser user = userService.getUserByName(reservation.getStudentName());
-        senderName = user.getUserEmail();
-        senderPassword = user.getUserEmailPassword();
-        recipientName = "";
+        recipientName = user.getUserEmail();
         userService.cancelStudentReservation(reservation);
 
-//        new EmailNotification().sendMail(senderName, senderPassword, recipientName);
         return new ResponseEntity<>("Reservation has been canceled", HttpStatus.OK);
     }
 
     @PostMapping("/reservation/apply")
     public ResponseEntity<String> applyReservation(@RequestParam @NotNull String teacherName) throws Exception {
+
         securityChecker.checkIfUserExists(teacherName);
-
-        senderName = "";
-        senderPassword = "";
-        recipientName = "";
-
-//        new EmailNotification().sendMail(senderName, senderPassword, recipientName);
         return new ResponseEntity<>("Reservation has been applied", HttpStatus.OK);
     }
 
     @DeleteMapping("/reservation/decline")
     public ResponseEntity<String> declineReservation() throws Exception {
-        senderName = "";
-        senderPassword = "";
-        recipientName = "";
 
-//        new EmailNotification().sendMail(senderName, senderPassword, recipientName);
+        securityChecker.checkIfUserExists();
+        String recipientName = "";
+        new EmailNotification().sendMail(EmailType.RESERVED, recipientName);
         return new ResponseEntity<>("Reservation has been declined", HttpStatus.OK);
     }
 
     @GetMapping("/price-rate")
     public ResponseEntity<String> showTeacherRate(@RequestParam @NotNull String teacherName) throws Exception {
-        securityChecker.checkIfUserExists(teacherName);
 
+        securityChecker.checkIfUserExists(teacherName);
         String response = userService.getPriceRate(teacherName);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
