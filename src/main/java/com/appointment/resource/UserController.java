@@ -30,7 +30,11 @@ public class UserController {
 
         recipientName = universityUser.getUserEmail();
         userService.saveUser(universityUser);
-        new EmailNotification().sendMail(EmailType.REGISTERED, recipientName);
+        try {
+            new EmailNotification().sendMail(EmailType.REGISTERED, recipientName);
+        }catch (Exception e){
+            System.out.println("Ошибка отправки сообщения. " + e);
+        }
         return new ResponseEntity<>("User has been created", HttpStatus.OK);
     }
 
@@ -69,7 +73,11 @@ public class UserController {
         securityChecker.checkIfTimeSlotIntersectsWithOthers(reservation.getStudentName(), "student", reservation.getAppointmentDate(), reservation.getAppointmentFinishDate());
 
         userService.saveStudentReservation(reservation);
-        new EmailNotification().sendMail(EmailType.RESERVED, recipientName);
+        try {
+            new EmailNotification().sendMail(EmailType.RESERVED, recipientName);
+        } catch (Exception e){
+            System.out.println("Ошибка отправки сообщения. " + e);
+        }
         return new ResponseEntity<>("Reservation has been created", HttpStatus.OK);
     }
 
@@ -93,7 +101,11 @@ public class UserController {
 
         securityChecker.checkIfUserExists();
         String recipientName = "";
-        new EmailNotification().sendMail(EmailType.RESERVED, recipientName);
+        try {
+            new EmailNotification().sendMail(EmailType.RESERVED, recipientName);
+        }catch (Exception e){
+            System.out.println("Ошибка отправки сообщения. " + e);
+        }
         return new ResponseEntity<>("Reservation has been declined", HttpStatus.OK);
     }
 

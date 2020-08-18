@@ -1,7 +1,14 @@
 # University appointment api
 
+Для работы с приложением откройте программу в вашей среде разработки и запустите класс AppointmentRunner.
+
+В классе EmailNotification в методе sendMail, замените значения для SENDER_NAME SENDER_PASSWORD, указав вашу почту и пароль к ней.
+
+Установите (https://www.postman.com/downloads/) и откройте postman.
+
+
 ## API:
-основной аддрес localhost:8080
+Базовый аддрес: localhost:8080
 
 ### Создание пользователя
 
@@ -12,6 +19,8 @@ POST /user
 * userType - тип пользователя (student или teacher)
 * userName - имя пользователя, должно быть уникальным
 * userEmail - почта пользователя, должно быть уникальным
+
+Если пользователь создастся вы увидите надпись "User has been created" и если вы правильно указали почту, вам на неё придёт сообщение о том что пользователь создан.
 
 ![](/src/main/resources/images/create_user.png)
 
@@ -26,7 +35,7 @@ GET /teachers
 
 GET teacher/schedule
 
-Необходимы параметр запроса:
+Необходимый параметр запроса:
 * teacherName - имя преподователя
 
 ![](/src/main/resources/images/get_teacher_schedule.png)
@@ -40,13 +49,19 @@ POST teacher/schedule
 * appointmentDate - дата начала занятия (формат: год-месяц-день час-минуты)
 * appointmentFinishDate - дата окончания занятия (формат: год-месяц-день час-минуты)
 
-![](/src/main/resources/images/teacher_schedule)
+![](/src/main/resources/images/teacher_schedule.png)
 
 ### Создать резервацию студенту
 
 POST /reservation
 
-![](/images/)
+Необходимые параметры тела запроса:
+* studentName - имя студента
+* appointmentDate - дата начала занятия (формат: год-месяц-день час-минуты)
+* appointmentFinishDate - дата окончания занятия (формат: год-месяц-день час-минуты)
+* teacherName - имя преподователя
+
+![](/src/main/resources/images/reservation.png)
 
 ### Отменить резервацию студенту
 
