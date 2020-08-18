@@ -3,7 +3,7 @@
 ## API:
 основной аддрес localhost:8080
 
-###__Создание пользователя__
+###Создание пользователя
 
 POST /user 
 Возвращает строку: "User has been created"
@@ -15,14 +15,14 @@ POST /user
 
 ![](/src/main/resources/images/create_user.png)
 
-###__Получить список учителей__
+###Получить список учителей
 
 GET /teachers
 Возвращает имена всех учителей из бд.
 
 ![](/src/main/resources/images/teachers)
 
-###__Получить время учителя когда он доступен__
+###Получить время учителя когда он доступен
 
 GET teacher/schedule
 
@@ -31,7 +31,7 @@ GET teacher/schedule
 
 ![](/src/main/resources/images/get_teacher_schedule.png)
 
-###__Добавить график учителя__
+###Добавить график учителя
 
 POST teacher/schedule
 
@@ -42,31 +42,31 @@ POST teacher/schedule
 
 ![](/src/main/resources/images/teacher_schedule)
 
-###__Создать резервацию студенту__
+###Создать резервацию студенту
 
 POST /reservation
 
 ![](/images/)
 
-###__Отменить резервацию студенту__
+###Отменить резервацию студенту
 
 DELETE /reservation
 
 ![](/images/)
 
-###__Принять резервацию учителю__
+###Принять резервацию учителю
 
 POST /reservation/apply
 
 ![](/images/)
 
-###__Отменить резервацию учителю__
+###Отменить резервацию учителю
 
 DELETE /reservation/decline
 
 ![](/images/)
 
-###__Создать стоимость за определенное кол-во времени__
+###Создать стоимость за определенное кол-во времени
 
 POST /price_rate
 
