@@ -6,6 +6,7 @@ import com.appointment.security.SecurityChecker;
 import com.appointment.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,24 +49,26 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping("/teacher/schedule")
+    @PostMapping(path = "/teacher/schedule")
     public ResponseEntity<String> createTeacherSchedule(@RequestBody @NotNull TeacherSchedule schedule) throws Exception {
 
         securityChecker.checkIfUserExists(schedule.getTeacherName());
+        securityChecker.checkTimeSlotValidation(schedule.getAppointmentDate(), schedule.getAppointmentFinishDate());
+        securityChecker.checkIfTimeSlotIntersectsWithOthers(schedule.getTeacherName(), "teacher", schedule.getAppointmentDate(), schedule.getAppointmentFinishDate());
+
         userService.saveTeacherSchedule(schedule);
         return new ResponseEntity<>("Schedule has been created ", HttpStatus.OK);
     }
 
     @PostMapping("/reservation")
     public ResponseEntity<String> createReservation(@RequestBody @NotNull StudentSchedule reservation) throws Exception {
+
         securityChecker.checkIfUserExists(reservation.getStudentName(), reservation.getTeacherName());
         securityChecker.checkTimeSlotValidation(reservation.getAppointmentDate(), reservation.getAppointmentFinishDate());
         securityChecker.checkIfTeacherScheduleIsFree(reservation.getTeacherName(), reservation.getAppointmentDate(), reservation.getAppointmentFinishDate());
+        securityChecker.checkIfTimeSlotIntersectsWithOthers(reservation.getStudentName(), "student", reservation.getAppointmentDate(), reservation.getAppointmentFinishDate());
 
-        UniversityUser user = userService.getUserByName(reservation.getTeacherName());
-        recipientName = user.getUserEmail();
         userService.saveStudentReservation(reservation);
-
         new EmailNotification().sendMail(EmailType.RESERVED, recipientName);
         return new ResponseEntity<>("Reservation has been created", HttpStatus.OK);
     }
@@ -73,8 +76,6 @@ public class UserController {
     @DeleteMapping("/reservation")
     public ResponseEntity<String> cancelReservation(@RequestBody @NotNull StudentSchedule reservation) throws Exception {
         securityChecker.checkIfUserExists(reservation.getStudentName(), reservation.getTeacherName());
-        UniversityUser user = userService.getUserByName(reservation.getStudentName());
-        recipientName = user.getUserEmail();
         userService.cancelStudentReservation(reservation);
 
         return new ResponseEntity<>("Reservation has been canceled", HttpStatus.OK);

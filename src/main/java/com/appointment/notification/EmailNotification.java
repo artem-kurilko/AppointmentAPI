@@ -12,7 +12,8 @@ public class EmailNotification {
     public void sendMail(EmailType type, String RECIPIENT_NAME) throws Exception {
         final String SENDER_NAME = "kurilko365@gmail.com";
 //                "universityappointmentapi@gmail.com";
-        final String SENDER_PASSWORD = "A123tmp123key";
+        final String SENDER_PASSWORD = "Cfd802vds36";
+//                "A123tmp123key";
 
         Properties p = new Properties();
         p.put("mail.smtp.host", "smtp.gmail.com");
