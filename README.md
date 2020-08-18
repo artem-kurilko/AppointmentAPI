@@ -12,20 +12,23 @@ POST /user
 * userName - имя пользователя, должно быть уникальным
 * userEmail - почта пользователя, должно быть уникальным
 
-![GitHub Logo](/images/)
+![GitHub Logo](/src/main/resources/images/create_user.png)
 Format: ![Alt Text](url)
 
 **Получить список учителей**
 GET /teachers
 Возвращает имена всех учителей из бд.
 
-![GitHub Logo](/images/)
+![GitHub Logo](/src/main/resources/images/teachers)
 Format: ![Alt Text](url)
 
 ** Получить время учителя когда он доступен **
 GET teacher/schedule
 
-![GitHub Logo](/images/)
+Необходимы параметр запроса:
+* teacherName - имя преподователя
+
+![GitHub Logo](/src/main/resources/images/get_teacher_schedule.png)
 Format: ![Alt Text](url)
 
 ** Добавить график учителя **
@@ -34,7 +37,7 @@ POST teacher/schedule
 Необходимые параметры тела запроса:
 * 
 
-![GitHub Logo](/images/)
+![GitHub Logo](/src/main/resources/images/teacher_schedule)
 Format: ![Alt Text](url)
 
 ** Создать резервацию студенту **
@@ -64,7 +67,12 @@ Format: ![Alt Text](url)
 ** Создать стоимость за определенное кол-во времени **
 POST /price_rate
 
-![GitHub Logo](/images/)
+Необходимые параметры тела запроса:
+* teacherName - имя преподователя
+* time - время 
+* price - целочисленная стоимость за указанное время
+
+![GitHub Logo](/src/main/resources/images/price_rate.png)
 Format: ![Alt Text](url)
 
 
