@@ -2,7 +2,7 @@
 
 Для работы с приложением откройте программу в вашей среде разработки и запустите класс AppointmentRunner.
 
-В классе EmailNotification в методе sendMail, замените значения для SENDER_NAME SENDER_PASSWORD, указав вашу почту и пароль к ней.
+В классе EmailNotification в методе sendMail, замените значения для SENDER_NAME и SENDER_PASSWORD, указав вашу почту и пароль к ней.
 
 Установите (https://www.postman.com/downloads/) и откройте postman.
 
