@@ -41,13 +41,12 @@ public class UserService {
     public void saveStudentReservation(StudentSchedule studentSchedule) {
         String status = "reserved";
 
-
         StudentSchedule schedule = new StudentSchedule(studentSchedule.getStudentName(), studentSchedule.getAppointmentDate(), studentSchedule.getAppointmentFinishDate(), studentSchedule.getTeacherName(), status);
         studentScheduleRepository.save(schedule);
     }
 
     public void cancelStudentReservation(StudentSchedule reservation) {
-        studentScheduleRepository.delete(reservation);
+        studentScheduleRepository.deleteById(studentScheduleRepository.findByNameAndAppointmentDate(reservation.getStudentName(), reservation.getAppointmentDate()).getId());
     }
 
     public void saveTeacherSchedule(TeacherSchedule teacherSchedule) {

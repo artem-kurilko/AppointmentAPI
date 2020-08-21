@@ -67,7 +67,13 @@ POST /reservation
 
 DELETE /reservation
 
-![](/images/)
+Необходимые параметры тела запроса:
+* studentName - имя студента
+* appointmentDate - дата начала занятия (формат: год-месяц-день час-минуты)
+* appointmentFinishDate - дата окончания занятия (формат: год-месяц-день час-минуты)
+* teacherName - имя преподователя
+
+![](/src/main/resources/images/cancel.png)
 
 ### Принять резервацию учителю
 
