@@ -53,19 +53,25 @@ public class SecurityChecker {
     public void checkIfTimeSlotIntersectsWithOthers(String userName, String role, Timestamp appointmentDate, Timestamp appointmentFinishDate) throws Exception {
         if (role.equals("teacher")){
             List<TeacherSchedule> schedules = teacherScheduleRepository.findAll().stream().filter(teacher -> teacher.getTeacherName().equals(userName)).collect(Collectors.toList());
+
             for (TeacherSchedule schedule : schedules){
-                if (!appointmentFinishDate.before(schedule.getAppointmentDate()) || !appointmentDate.after(schedule.getAppointmentFinishDate()))
+                if ((appointmentFinishDate.after(schedule.getAppointmentDate()) || appointmentFinishDate.equals(schedule.getAppointmentDate())) && (appointmentFinishDate.before(schedule.getAppointmentFinishDate()) || appointmentFinishDate.equals(schedule.getAppointmentFinishDate())))
+                    throw new Exception("Time slot validation error. Teacher's schedule time slot intersects in time with another time slot.");
+                else if((appointmentDate.after(schedule.getAppointmentDate()) || appointmentDate.equals(schedule.getAppointmentDate())) && (appointmentDate.before(schedule.getAppointmentFinishDate()) || appointmentDate.equals(schedule.getAppointmentFinishDate())))
                     throw new Exception("Time slot validation error. Teacher's schedule time slot intersects in time with another time slot.");
             }
             return;
         }else if(role.equals("student")){
             List<StudentSchedule> schedules = studentScheduleRepository.findAll().stream().filter(student -> student.getStudentName().equals(userName)).collect(Collectors.toList());
+
             for (StudentSchedule schedule : schedules){
-                if (!appointmentFinishDate.before(schedule.getAppointmentDate()) || !appointmentDate.after(schedule.getAppointmentFinishDate()))
+                if ((appointmentFinishDate.after(schedule.getAppointmentDate()) || appointmentFinishDate.equals(schedule.getAppointmentDate())) && (appointmentFinishDate.before(schedule.getAppointmentFinishDate()) || appointmentFinishDate.equals(schedule.getAppointmentFinishDate())))
+                    throw new Exception("Time slot validation error. Student's schedule time slot intersects in time with another time slot.");
+                else if((appointmentDate.after(schedule.getAppointmentDate()) || appointmentDate.equals(schedule.getAppointmentDate())) && (appointmentDate.before(schedule.getAppointmentFinishDate()) || appointmentDate.equals(schedule.getAppointmentFinishDate())))
                     throw new Exception("Time slot validation error. Student's schedule time slot intersects in time with another time slot.");
             }
             return;
-        } throw new Exception("User role validation error. Cannot determine user role.");
+        } throw new Exception("User's role validation error. Cannot determine user role.");
     }
 
     /** check if teacher has free time in the specified time slot */
