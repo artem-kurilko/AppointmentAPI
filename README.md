@@ -13,6 +13,7 @@
 ### Создание пользователя
 
 POST /user 
+
 Возвращает строку: "User has been created"
 
 Необходимые параметры тела запроса:
@@ -27,6 +28,7 @@ POST /user
 ### Получить список учителей
 
 GET /teachers
+
 Возвращает имена всех учителей из бд.
 
 ![](/src/main/resources/images/teachers.png)
