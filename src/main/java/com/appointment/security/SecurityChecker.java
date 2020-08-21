@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -47,6 +48,11 @@ public class SecurityChecker {
     public void checkTimeSlotValidation(Timestamp appointmentDate, Timestamp appointmentFinishDate) throws Exception {
         if (appointmentDate.after(appointmentFinishDate) || appointmentDate.equals(appointmentFinishDate))
             throw new Exception("Time slot validation error. Appointment date is after or equals appointment finish date");
+    }
+
+    public void checkIfReservationExists(StudentSchedule schedule) throws Exception {
+        if (studentScheduleRepository.findByNameAndAppointmentDate(schedule.getStudentName(), schedule.getAppointmentDate()) == null)
+            throw new Exception("There is no such student schedule in database. Please validate your data.");
     }
 
     /** check if user has a time slot that intersects in time with another time slot */

@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
+import java.sql.Timestamp;
 import java.util.List;
 
 @RestController
@@ -26,12 +27,13 @@ public class UserController {
     }
 
     @PostMapping("/user")
-    public ResponseEntity<String> createUser(@RequestBody @NotNull UniversityUser universityUser) throws Exception {
-
+    public ResponseEntity<String> createUser(@RequestBody @NotNull UniversityUser universityUser) {
         recipientName = universityUser.getUserEmail();
         userService.saveUser(universityUser);
+        String subject = "Регистрация пользователя";
+        String text = "Пользователь " + universityUser.getUserName() + " был успешно зарегестрирован.";
         try {
-            new EmailNotification().sendMail(EmailType.REGISTERED, recipientName);
+            new EmailNotification().sendMail(recipientName, subject, text);
         }catch (Exception e){
             System.out.println("Ошибка отправки сообщения. " + e);
         }
@@ -72,9 +74,12 @@ public class UserController {
         securityChecker.checkIfTeacherScheduleIsFree(reservation.getTeacherName(), reservation.getAppointmentDate(), reservation.getAppointmentFinishDate());
         securityChecker.checkIfTimeSlotIntersectsWithOthers(reservation.getStudentName(), "student", reservation.getAppointmentDate(), reservation.getAppointmentFinishDate());
 
+        String subject = "Уведомление о резервации";
+        String text = "Студент " + reservation.getStudentName() + " зарезервировал у вас время.\nДанные о резервации:\nИмя студента " + reservation.getStudentName() + "\nВремя резервации: " + reservation.getAppointmentDate() + " - " + reservation.getAppointmentFinishDate() + "\nПожалуйста отмените или подтвердите резервацию.";
         userService.saveStudentReservation(reservation);
+        recipientName = userService.getUserByName(reservation.getStudentName()).getUserEmail();
         try {
-            new EmailNotification().sendMail(EmailType.RESERVED, recipientName);
+            new EmailNotification().sendMail(recipientName, subject, text);
         } catch (Exception e){
             System.out.println("Ошибка отправки сообщения. " + e);
         }
@@ -84,25 +89,32 @@ public class UserController {
     @DeleteMapping("/reservation")
     public ResponseEntity<String> cancelReservation(@RequestBody @NotNull StudentSchedule reservation) throws Exception {
         securityChecker.checkIfUserExists(reservation.getStudentName(), reservation.getTeacherName());
+        securityChecker.checkIfReservationExists(reservation);
         userService.cancelStudentReservation(reservation);
 
         return new ResponseEntity<>("Reservation has been canceled", HttpStatus.OK);
     }
 
     @PostMapping("/reservation/apply")
-    public ResponseEntity<String> applyReservation(@RequestParam @NotNull String teacherName) throws Exception {
+    public ResponseEntity<String> applyReservation(@RequestBody @NotNull StudentSchedule reservation, @RequestParam @NotNull Timestamp teachersAppointmentDate) throws Exception {
+        securityChecker.checkIfUserExists(reservation.getStudentName(), reservation.getTeacherName());
+        securityChecker.checkIfReservationExists(reservation);
 
-        securityChecker.checkIfUserExists(teacherName);
+        userService.approveStudentReservation(reservation, teachersAppointmentDate);
         return new ResponseEntity<>("Reservation has been applied", HttpStatus.OK);
     }
 
     @DeleteMapping("/reservation/decline")
-    public ResponseEntity<String> declineReservation() throws Exception {
+    public ResponseEntity<String> declineReservation(@RequestBody @NotNull StudentSchedule reservation) throws Exception {
+        securityChecker.checkIfUserExists(reservation.getStudentName(), reservation.getTeacherName());
+        securityChecker.checkIfReservationExists(reservation);
 
-        securityChecker.checkIfUserExists();
-        String recipientName = "";
+        userService.declineStudentReservation(reservation);
+        String recipientName = userService.getUserByName(reservation.getStudentName()).getUserEmail();
+        String subject = "Уведомление о резервации";
+        String text = "Преподователь отклонил вашу резервацию.\nДанные о резервации:\n" + "Преподователь " + reservation.getTeacherName() + "\nВремя резервации "+ reservation.getAppointmentDate() + " - " + reservation.getAppointmentFinishDate() + "\nПожалуйста отмените её в вашем расписании.";
         try {
-            new EmailNotification().sendMail(EmailType.RESERVED, recipientName);
+            new EmailNotification().sendMail(recipientName, subject, text);
         }catch (Exception e){
             System.out.println("Ошибка отправки сообщения. " + e);
         }

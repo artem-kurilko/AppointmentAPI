@@ -11,6 +11,7 @@ import com.appointment.repository.UniversityUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -47,6 +48,15 @@ public class UserService {
 
     public void cancelStudentReservation(StudentSchedule reservation) {
         studentScheduleRepository.deleteById(studentScheduleRepository.findByNameAndAppointmentDate(reservation.getStudentName(), reservation.getAppointmentDate()).getId());
+    }
+
+    public void approveStudentReservation(StudentSchedule reservation, Timestamp teachersAppointmentDate){
+        studentScheduleRepository.findByNameAndAppointmentDate(reservation.getStudentName(), reservation.getAppointmentDate()).setStatus("approved");
+        teacherScheduleRepository.addStudentToSchedule(reservation.getTeacherName(), teachersAppointmentDate, reservation.getStudentName());
+    }
+
+    public void declineStudentReservation(StudentSchedule reservation){
+        studentScheduleRepository.findByNameAndAppointmentDate(reservation.getStudentName(), reservation.getAppointmentDate()).setStatus("declined");
     }
 
     public void saveTeacherSchedule(TeacherSchedule teacherSchedule) {
