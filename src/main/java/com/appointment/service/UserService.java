@@ -31,8 +31,9 @@ public class UserService {
         this.teacherScheduleRepository = teacherScheduleRepository;
     }
 
-    public void saveUser(UniversityUser user){
-        universityUserRepository.save(user);
+    public void saveUser(UniversityUser user, String userType){
+        UniversityUser newUser = new UniversityUser(userType, user.getUserName(), user.getUserName());
+        universityUserRepository.save(newUser);
     }
 
     public UniversityUser getUserByName(String name){
